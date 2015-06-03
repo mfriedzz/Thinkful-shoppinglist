@@ -27,6 +27,7 @@ Storage.prototype.remove = function(id) {
 };
 
 Storage.prototype.update = function(id, name) {
+    console.log("Got here");
     var item = {};
     // Loop through all item and delete the selected one
     for(var i = 0; i < this.items.length; i++){      
@@ -35,7 +36,7 @@ Storage.prototype.update = function(id, name) {
         item = this.items[i];
       }
     }
-    
+    console.log("item",item);
     return item;
 };
 
@@ -75,11 +76,12 @@ app.delete('/items/:id', function (request, response) {
     }
 });
 
-app.put('/items/:id', function (request, response) {
+app.put('/items/:id', jsonParser, function (request, response) {
     try {
+       console.log("id & Body", request.params.id, request.body.name);
       var item = storage.update(request.params.id, request.body.name);
       response.status(201).json(item);
-      //console.log("id", request.params.id);
+     
       
         //response.send(200);
     } catch (exeception) {
@@ -99,3 +101,6 @@ app.use(errorHandler);
 var server = app.listen(process.env.PORT || 8080, function() {
   console.log('Express server listening on port ' + server.address().port);
 });
+
+exports.app = app;
+exports.storage = storage;
